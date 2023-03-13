@@ -1,5 +1,6 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, Suspense } from 'react';
 import { useState } from 'react';
+
 import {
   AppShell,
   Navbar,
@@ -10,6 +11,7 @@ import {
   MediaQuery,
   Burger,
   Kbd,
+  Loader,
   useMantineTheme,
 } from '@mantine/core';
 
@@ -78,7 +80,9 @@ export default function Layout({ children, aside }: { children: ReactNode, aside
         </Header>
       }
     >
-      {children}
+      <Suspense fallback={<Loader />}>
+        {children}
+      </Suspense>
     </AppShell>
   );
 }

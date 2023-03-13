@@ -1,27 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { lazy } from 'react';
 
 import {
-  Stack,
-  Box,
   Container,
-  ScrollArea,
-  Accordion,
-  Textarea,
 } from '@mantine/core';
 
 import Layout from '../Layout';
 
-function Page() {
-  useEffect(() => {
-    console.log('mount');
-    return () => console.log('unmount');
-  });
+const PageContent = lazy(() => import('./PageContent'));
 
-  return <Layout>
+function DiffPage() {
+  return <Layout aside={<p>Some text to go in the sidebar</p>}>
     <Container fluid style={{ width: '100%' }}>
-      This is a page
+      <PageContent/>
     </Container>
   </Layout>;
 }
 
-export default Page;
+export default DiffPage;

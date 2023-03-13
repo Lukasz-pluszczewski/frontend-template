@@ -7,12 +7,7 @@ import {
   Icon,
 } from '@tabler/icons-react';
 
-const DefaultNavigationProps = {
-  size: 16,
-  stroke: 1.5,
-}
-
-const routes: [string, string, Icon, string?][] = [
+const routes: [url: string, title: string, icon: Icon, description?: string][] = [
   ['/', 'Home', IconHome2],
   ['/page', 'Page', IconAppWindow, 'Example of a page'],
 ];
