@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box, Stack } from '@mantine/core';
+import { Blockquote, Stack } from '@mantine/core';
 
 const Cat = () => (
   <svg
@@ -32,8 +32,10 @@ function Page() {
   });
 
   return <Stack>
-    <Box>This is a cat :)</Box>
     <Cat />
+    <Blockquote cite="– A Cat">
+      "Purr, meow!"
+    </Blockquote>
   </Stack>;
 }
 

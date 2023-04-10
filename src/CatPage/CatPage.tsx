@@ -6,12 +6,12 @@ import {
 
 import Layout from '../Layout';
 
-const PageContent = lazy(() => import('./PageContent'));
+const CatContent = lazy(() => import('./CatContent'));
 
 function DiffPage() {
-  return <Layout aside={<p>Some text to go in the sidebar</p>}>
+  return <Layout aside={<p>Here you have it! A CAT!</p>} title="A cat page">
     <Container fluid style={{ width: '100%' }}>
-      <PageContent/>
+      <CatContent/>
     </Container>
   </Layout>;
 }
