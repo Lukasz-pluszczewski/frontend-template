@@ -17,6 +17,5 @@
     "jsx": "react-jsx"
   },
   "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }],
-  "files": ["node_modules/jest-expect-message/types/index.d.ts"]
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
