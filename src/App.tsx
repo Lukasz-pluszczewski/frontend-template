@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { useHotkeys, useLocalStorage } from '@mantine/hooks';
 import {
@@ -9,6 +10,9 @@ import {
 } from '@mantine/core';
 
 import Routes from './Routes';
+import { ComposeContextProviders } from './shared/utility/ComposeContextProviders';
+
+const queryClient = new QueryClient();
 
 function App() {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
@@ -22,20 +26,16 @@ function App() {
   useHotkeys([['mod+J', () => toggleColorScheme()]]);
 
   return (
-    <ColorSchemeProvider
-      colorScheme={colorScheme}
-      toggleColorScheme={toggleColorScheme}
+    <ComposeContextProviders
+      providers={[
+        [ColorSchemeProvider, { colorScheme, toggleColorScheme }],
+        [MantineProvider, { theme: { colorScheme }, withGlobalStyles: true, withNormalizeCSS: true }],
+        [QueryClientProvider, { client: queryClient }],
+        [Router, {}],
+      ]}
     >
-      <MantineProvider
-        theme={{ colorScheme }}
-        withGlobalStyles
-        withNormalizeCSS
-      >
-        <Router>
-          <Routes />
-        </Router>
-      </MantineProvider>
-    </ColorSchemeProvider>
+      <Routes />
+    </ComposeContextProviders>
   );
 }
 
