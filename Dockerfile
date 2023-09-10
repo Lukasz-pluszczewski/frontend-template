@@ -1,16 +1,14 @@
-FROM node:18-alpine AS builder
-ENV NODE_ENV production
+FROM oven/bun:1.0.0 AS builder
 WORKDIR /app
 
 COPY package.json .
-COPY package-lock.json .
-RUN npm ci --legacy-peer-deps --include=dev
+COPY bun.lockb .
+RUN bun i
 
 COPY . .
-RUN npm run build
+RUN bun run build
 
 FROM nginx:1.21.0-alpine as production
-ENV NODE_ENV production
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
