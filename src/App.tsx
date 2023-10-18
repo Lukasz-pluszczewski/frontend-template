@@ -1,35 +1,50 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { useHotkeys, useLocalStorage } from '@mantine/hooks';
+import { useHotkeys } from '@mantine/hooks';
 import {
   MantineProvider,
-  ColorSchemeProvider,
-  ColorScheme,
+  createTheme,
+  localStorageColorSchemeManager,
+  useMantineColorScheme,
+  useComputedColorScheme,
 } from '@mantine/core';
 
 import Routes from './Routes';
 import { ComposeContextProviders } from './shared/utility/ComposeContextProviders';
 
+import '@mantine/core/styles.css';
+
 const queryClient = new QueryClient();
 
-function App() {
-  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
-    key: 'mantine-stackblitz-theme',
-    defaultValue: 'dark',
-  });
+const theme = createTheme({});
+const colorSchemeManager = localStorageColorSchemeManager({ key: 'mantine-color-scheme' });
 
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+const ColorSchemeControls = ({ children }: { children: ReactNode }) => {
+  const { setColorScheme } = useMantineColorScheme();
+  const computedColorScheme = useComputedColorScheme('dark');
+
+  const toggleColorScheme = () =>
+    setColorScheme(computedColorScheme === 'dark' ? 'light' : 'dark');
 
   useHotkeys([['mod+J', () => toggleColorScheme()]]);
 
+  return children;
+};
+function App() {
   return (
     <ComposeContextProviders
       providers={[
-        [ColorSchemeProvider, { colorScheme, toggleColorScheme }],
-        [MantineProvider, { theme: { colorScheme }, withGlobalStyles: true, withNormalizeCSS: true }],
+        [
+          MantineProvider,
+          {
+            theme,
+            colorSchemeManager,
+            defaultColorScheme: 'dark',
+          },
+        ],
+        [ColorSchemeControls, {}],
         [QueryClientProvider, { client: queryClient }],
         [Router, {}],
       ]}
