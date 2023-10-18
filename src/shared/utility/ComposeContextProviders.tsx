@@ -9,7 +9,7 @@ type ComposeContextProvidersParams = {
 export const ComposeContextProviders = ({ providers, children }: ComposeContextProvidersParams) => {
   return (
     <>
-      {providers.reverse().reduce((acc, [Provider, props]) => {
+      {[...providers].reverse().reduce((acc, [Provider, props]) => {
         return <Provider {...props}>{acc}</Provider>;
       }, children)}
     </>
