@@ -2,7 +2,7 @@
 
 # Create JSON file from environment variables
 echo "{
-  \"API_URL\": \"${API_URL}\"
+  \"apiUrl\": \"${API_URL}\"
 }" > /usr/share/nginx/html/config.json
 
 # Start nginx

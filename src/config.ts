@@ -22,7 +22,7 @@ const loadConfigFromConfigJson = async () => {
       return parsedConfig;
     }
 
-    (Object.keys(parsedConfig) as (keyof z.infer<typeof configSchema>)[]).forEach((key) => {
+    (Object.keys(parsedConfig.data) as (keyof z.infer<typeof configSchema>)[]).forEach((key) => {
       config[key] = parsedConfig.data[key];
     });
 
