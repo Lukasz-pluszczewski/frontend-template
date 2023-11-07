@@ -1,4 +1,5 @@
 import path from 'path';
+import fs from 'fs/promises';
 import _ from 'lodash';
 import inquirer from 'inquirer';
 import replace from 'replace-in-file';
@@ -52,11 +53,20 @@ const questions = [
     },
     default: () => '1.0.0',
   },
+  {
+    type: 'confirm',
+    name: 'createDotEnv',
+    message: "Create .env.local file?",
+    default: () => true,
+  },
 ];
 
 (async () => {
   const answers = await inquirer.prompt(questions);
 
+  if (answers.createDotEnv) {
+    await fs.cp('./.env.local.example', './.env.local');
+  }
   const results = replace.sync({
     files: [
       'package.json',
@@ -69,6 +79,7 @@ const questions = [
   const filesUpdated = results.filter(result => result.hasChanged);
   console.log(`${filesUpdated.length || 0} files updated:`);
   console.log(results.filter(result => result.hasChanged).map(result => `    \x1b[32m ${result.file} \x1b[0m`).join('\n'));
+  console.log(answers.createDotEnv ? 'Created .env.local file' : '.env.local file not created');
 })();
 
 
