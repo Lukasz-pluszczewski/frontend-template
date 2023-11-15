@@ -6,18 +6,18 @@ import { config } from '../../config';
 
 export const useCustomMutation = <TVariables, TData = unknown, TError = unknown, TContext = unknown>(
   getConfig: (data: TVariables) => AxiosRequestConfig,
-  schema?: ZodType<TVariables> | null,
+  mutationParamsSchema?: ZodType<TVariables> | null,
   options?: Omit<
     UseMutationOptions<TData, TError, TVariables, TContext>,
     'mutationFn'
-  > & { invalidateKeys?: string[],  },
+  > & { invalidateKeys?: string[], responseSchema?: ZodType<TData> },
 ) => {
   const queryClient = useQueryClient();
   const { invalidateKeys, ...useMutationOptions } = options || {};
 
   return useMutation<TData, TError, TVariables, TContext>(
     async (rawData: TVariables) => {
-      const data = schema ? await schema.parseAsync(rawData) : rawData;
+      const data = mutationParamsSchema ? await mutationParamsSchema.parseAsync(rawData) : rawData;
       const axiosParams = getConfig(data);
 
       const { data: responseData } = await axios({
@@ -25,7 +25,9 @@ export const useCustomMutation = <TVariables, TData = unknown, TError = unknown,
         ...axiosParams,
       });
 
-      return responseData;
+      return options?.responseSchema
+        ? options.responseSchema.parseAsync(responseData)
+        : responseData;
     },
     {
       ...useMutationOptions,
