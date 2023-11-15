@@ -14,9 +14,9 @@ export const useCustomQuery = <TQueryFnData = unknown, TError = unknown, TData =
   schema?: ZodType<TQueryFnData> | null,
   options: Omit<UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>, 'queryKey' | 'queryFn'> = {}
 ) => {
-  return useQuery(
-    key,
-    async () => {
+  return useQuery({
+    queryKey: key,
+    queryFn: async () => {
       const { data } = await axios({
         baseURL: config.apiUrl,
         ...axiosParams,
@@ -26,11 +26,9 @@ export const useCustomQuery = <TQueryFnData = unknown, TError = unknown, TData =
       }
       return schema.parseAsync(data);
     },
-    {
-      ...defaultOptions,
-      ...options,
-    }
-  );
+    ...defaultOptions,
+    ...options,
+  });
 }
 
 export const QUERY_KEYS = {

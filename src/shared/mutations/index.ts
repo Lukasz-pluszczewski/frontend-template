@@ -15,8 +15,8 @@ export const useCustomMutation = <TVariables, TData = unknown, TError = unknown,
   const queryClient = useQueryClient();
   const { invalidateKeys, ...useMutationOptions } = options || {};
 
-  return useMutation<TData, TError, TVariables, TContext>(
-    async (rawData: TVariables) => {
+  return useMutation<TData, TError, TVariables, TContext>({
+    mutationFn: async (rawData: TVariables) => {
       const data = mutationParamsSchema ? await mutationParamsSchema.parseAsync(rawData) : rawData;
       const axiosParams = getConfig(data);
 
@@ -26,19 +26,17 @@ export const useCustomMutation = <TVariables, TData = unknown, TError = unknown,
       });
 
       return options?.responseSchema
-        ? options.responseSchema.parseAsync(responseData)
+        ? await options.responseSchema.parseAsync(responseData)
         : responseData;
     },
-    {
-      ...useMutationOptions,
-      onSuccess: (...args) => {
-        if (options?.onSuccess) {
-          options.onSuccess(...args);
-        }
-        options?.invalidateKeys?.forEach((key) => {
-          queryClient.invalidateQueries({ queryKey: [key] });
-        });
-      },
-    }
-  )
+    ...useMutationOptions,
+    onSuccess: (...args) => {
+      if (options?.onSuccess) {
+        options.onSuccess(...args);
+      }
+      options?.invalidateKeys?.forEach((key) => {
+        queryClient.invalidateQueries({ queryKey: [key] });
+      });
+    },
+  })
 };
