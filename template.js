@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs/promises';
 import _ from 'lodash';
 import inquirer from 'inquirer';
-import replace from 'replace-in-file';
+import { replaceInFileSync } from 'replace-in-file';
 
 const SEMVER_PATTERN = /(?<=^v?|\sv?)(?:(?:0|[1-9]\d{0,9}?)\.){2}(?:0|[1-9]\d{0,9})(?:-(?:--+)?(?:0|[1-9]\d*|\d*[a-z]+\d*)){0,100}(?=$| |\+|\.)(?:(?<=-\S+)(?:\.(?:--?|[\da-z-]*[a-z-]\d*|0|[1-9]\d*)){1,100}?)?(?!\.)(?:\+(?:[\da-z]\.?-?){1,100}?(?!\w))?(?!\+)/gi;
 
@@ -67,7 +67,7 @@ const questions = [
   if (answers.createDotEnv) {
     await fs.cp('./.env.local.example', './.env.local');
   }
-  const results = replace.sync({
+  const results = replaceInFileSync({
     files: [
       'package.json',
       'index.html',
